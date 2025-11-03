@@ -62,6 +62,9 @@ const status = $computed(() => {
     case 8:
       str += '默写之前学习'
       break
+    case 10:
+      str += '随机复习'
+      break
   }
   return str
 })

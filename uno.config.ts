@@ -8,6 +8,8 @@ export default defineConfig({
     'bg-third': 'bg-[var(--color-third)]',
     'bg-card-active': 'bg-[var(--color-card-active)]',
     'bg-item': 'bg-[var(--color-item-bg)]',
+    'bg-reverse-white': 'bg-[var(--color-reverse-white)]',
+    'bg-reverse-black': 'bg-[var(--color-reverse-black)]',
     'color-main': 'color-[var(--color-main-text)]',
     'gap-space': 'gap-[var(--space)]',
     'p-space': 'p-[var(--space)]',

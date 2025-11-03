@@ -7,7 +7,7 @@ interface IProps {
   disabled?: boolean
   loading?: boolean
   size?: 'small' | 'normal' | 'large',
-  type?: 'primary' | 'link' | 'info'
+  type?: 'primary' | 'link' | 'info' | 'orange'
 }
 
 withDefaults(defineProps<IProps>(), {
@@ -97,7 +97,7 @@ defineEmits(['click'])
     }
   }
 
-  &:hover {
+  &:hover:not(.disabled) {
     opacity: .8;
   }
 
@@ -118,6 +118,11 @@ defineEmits(['click'])
     background: var(--btn-info);
     border: 1px solid var(--color-main-text);
     color: var(--color-main-text);
+  }
+
+  &.orange {
+    background: #FACC15;
+    color: black;
   }
 
   &.active {

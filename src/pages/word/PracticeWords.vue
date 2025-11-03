@@ -1,17 +1,17 @@
 <script setup lang="ts">
 
-import {onMounted, provide, ref, watch} from "vue";
+import { onMounted, provide, ref, watch } from "vue";
 
 import Statistics from "@/pages/word/Statistics.vue";
-import {emitter, EventKey, useEvents} from "@/utils/eventBus.ts";
-import {useSettingStore} from "@/stores/setting.ts";
-import {useRuntimeStore} from "@/stores/runtime.ts";
-import {Dict, PracticeData, WordPracticeType, ShortcutKey, TaskWords, Word, WordPracticeMode} from "@/types/types.ts";
-import {useDisableEventListener, useOnKeyboardEventListener, useStartKeyboardEventListener} from "@/hooks/event.ts";
+import { emitter, EventKey, useEvents } from "@/utils/eventBus.ts";
+import { useSettingStore } from "@/stores/setting.ts";
+import { useRuntimeStore } from "@/stores/runtime.ts";
+import { Dict, PracticeData, WordPracticeType, ShortcutKey, TaskWords, Word, WordPracticeMode } from "@/types/types.ts";
+import { useDisableEventListener, useOnKeyboardEventListener, useStartKeyboardEventListener } from "@/hooks/event.ts";
 import useTheme from "@/hooks/theme.ts";
-import {getCurrentStudyWord, useWordOptions} from "@/hooks/dict.ts";
-import {_getDictDataByUrl, cloneDeep, resourceWrap, shuffle} from "@/utils";
-import {useRoute, useRouter} from "vue-router";
+import { getCurrentStudyWord, useWordOptions } from "@/hooks/dict.ts";
+import { _getDictDataByUrl, cloneDeep, resourceWrap, shuffle } from "@/utils";
+import { useRoute, useRouter } from "vue-router";
 import Footer from "@/pages/word/components/Footer.vue";
 import Panel from "@/components/Panel.vue";
 import BaseIcon from "@/components/BaseIcon.vue";
@@ -19,15 +19,15 @@ import Tooltip from "@/components/base/Tooltip.vue";
 import WordList from "@/components/list/WordList.vue";
 import TypeWord from "@/pages/word/components/TypeWord.vue";
 import Empty from "@/components/Empty.vue";
-import {useBaseStore} from "@/stores/base.ts";
-import {usePracticeStore} from "@/stores/practice.ts";
+import { useBaseStore } from "@/stores/base.ts";
+import { usePracticeStore } from "@/stores/practice.ts";
 import Toast from '@/components/base/toast/Toast.ts'
-import {getDefaultDict, getDefaultWord} from "@/types/func.ts";
+import { getDefaultDict, getDefaultWord } from "@/types/func.ts";
 import ConflictNotice from "@/components/ConflictNotice.vue";
 import PracticeLayout from "@/components/PracticeLayout.vue";
 
-import {DICT_LIST, PracticeSaveWordKey} from "@/config/env.ts";
-import {ToastInstance} from "@/components/base/toast/type.ts";
+import { DICT_LIST, PracticeSaveWordKey } from "@/config/env.ts";
+import { ToastInstance } from "@/components/base/toast/type.ts";
 
 const {
   isWordCollect,
@@ -125,26 +125,33 @@ function initData(initVal: TaskWords, init: boolean = false) {
     }
   } else {
     taskWords = initVal
-    if (taskWords.new.length === 0) {
-      if (taskWords.review.length) {
-        settingStore.wordPracticeType = WordPracticeType.Identify
-        statStore.step = 3
-        data.words = taskWords.review
-      } else {
-        if (taskWords.write.length) {
+    if (taskWords.shuffle.length === 0) {
+      if (taskWords.new.length === 0) {
+        if (taskWords.review.length) {
           settingStore.wordPracticeType = WordPracticeType.Identify
-          data.words = taskWords.write
-          statStore.step = 6
+          statStore.step = 3
+          data.words = taskWords.review
         } else {
-          Toast.warning('没有可学习的单词！')
-          router.push('/word')
+          if (taskWords.write.length) {
+            settingStore.wordPracticeType = WordPracticeType.Identify
+            data.words = taskWords.write
+            statStore.step = 6
+          } else {
+            Toast.warning('没有可学习的单词！')
+            router.push('/word')
+          }
         }
+      } else {
+        settingStore.wordPracticeType = WordPracticeType.FollowWrite
+        data.words = taskWords.new
+        statStore.step = 0
       }
     } else {
-      settingStore.wordPracticeType = WordPracticeType.FollowWrite
-      data.words = taskWords.new
-      statStore.step = 0
+      settingStore.wordPracticeType = WordPracticeType.Dictation
+      data.words = taskWords.shuffle
+      statStore.step = 10
     }
+
     data.index = 0
     data.wrongWords = []
     data.excludeWords = []
